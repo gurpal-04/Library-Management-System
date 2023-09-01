@@ -17,7 +17,7 @@ bool emailValidation(const char *str) {
 	if(n==1){
 		return true;
 	}
-    return false; // Did not find '@' in the string
+    return false; 
 }
 
 
