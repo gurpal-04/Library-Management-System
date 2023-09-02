@@ -5,7 +5,7 @@
 #include "operations.h"
 
 
-bool emailValidation(const char *str) {
+bool emailValidation(char *str) {
     int n=0;
     while (*str) {
         if (*str == '@') {
@@ -26,9 +26,9 @@ void signIn(){
     char username[50], password[17];
     printf("Enter your email:\n");
     scanf("%s", username);
-    while(!emailValidation){
-	printf(“Enter valid email address\n”);
-	scanf("%s", username);
+    while(!emailValidation(username)){
+	    printf("Enter valid email address\n");
+	    scanf("%s", username);
     }
     printf("Enter password ( 1-16 length )\n");
     scanf("%s", password);
