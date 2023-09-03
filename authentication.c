@@ -1,3 +1,4 @@
+#include <regex.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
@@ -5,16 +6,22 @@
 #include "operations.h"
 
 
-bool emailValidation(char *str) {
-    int n=0;
-    while (*str) {
-        if (*str == '@') {
-            n++;
-        }
-        str++;
+bool emailValidation(char str[]) {
+    char *pattern = "^[A-Za-z0-9+_.-]+@(.+)$";
+
+    regex_t emailPattern;
+
+    int ret = regcomp(&emailPattern, pattern, REG_EXTENDED);
+    if(ret){
+        char error_msg[100];
+        regerror(ret, &emailPattern, error_msg, sizeof(error_msg));
+        printf("Regular exp compile failed\n");
+        printf("Error Message: %s", error_msg);
     }
 
-	if(n==1){
+    ret = regexec(&emailPattern, str, 0, NULL, 0);
+
+	if(ret == 0){
 		return true;
 	}
     return false; 
