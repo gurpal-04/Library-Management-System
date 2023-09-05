@@ -27,6 +27,28 @@ bool emailValidation(char str[]) {
     return false; 
 }
 
+bool passwordValidation(char str[]){
+    char *pattern = "^[A-Za-z0-9+_.-]+@(.+)$";
+
+    regex_t passwordPattern;
+
+    int ret = regcomp(&passwordPattern, pattern, REG_EXTENDED);
+    if(ret){
+        char error_msg[100];
+        regerror(ret, &emailPattern, error_msg, sizeof(error_msg));
+        printf("Regular exp compile failed\n");
+        printf("Error Message: %s", error_msg);
+    }
+
+    ret = regexec(&passwordPattern, str, 0, NULL, 0);
+
+	if(ret == 0){
+        regfree(&passwordPattern);
+		return true;
+	}
+    regfree(&passwordPattern);
+    return false;
+}
 
 void signIn(){
     FILE *fp;
@@ -37,8 +59,12 @@ void signIn(){
 	    printf("Enter valid email address\n");
 	    scanf("%s", username);
     }
-    printf("Enter password ( 1-16 length )\n");
+    printf("Enter password\nYour password should be at least 8 character and maximun 16 character.\n");
     scanf("%s", password);
+    while(!passwordValidation(password)){
+        printf("Enter valid password:\n");
+        scanf("%s", password);
+    }
 
     fp = fopen("users.txt", "a");
     if(fp == NULL){
@@ -47,6 +73,7 @@ void signIn(){
 
     fprintf(fp, "%s %s %d %d\n", username, password, -1, -1);
     fclose(fp);
+    userDashboard(username);
 }
 
 bool adminLogIn(char username[50], char password[17]){
@@ -118,6 +145,7 @@ void logIn(){
     }else if(n==2 && adminLogIn(username, password)){
    	 adminDashboard();
     }else{
+     printf("Invalid credentials. Try again.\n");
    	 logIn();
     }
 }
