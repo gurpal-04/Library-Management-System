@@ -10,7 +10,13 @@ void addBook(){
 
     printf("\nEnter id of the book\n");
     scanf("%d", &n);
-    
+
+    while(validBookId(n)){
+        printf("There already exist a book with Id: %d\n", n);
+        printf("Enter valid Book Id\n");
+        scanf("%d", &n);
+    }   
+
     printf("Enter name of the Book\n");
     scanf("%s", book);
     
@@ -101,6 +107,91 @@ void findBook(){
 
 }
 
+bool validBookId(int bookId){
+    FILE *fp;
+    fp = fopen("books.txt", "r");
+
+    if (fp == NULL){
+   	 printf("Failed to open the file\n");
+    }
+
+    char book[50], ch, author[50];
+    int stock, id;
+    bool found = false;
+
+    do {
+   	 fscanf(fp, "%d", id);
+   	 ch = fscanf(fp, "%s", book);
+   	 ch = fscanf(fp, "%s", author);
+   	 ch = fscanf(fp, "%d", &stock);
+
+   	 if (ch == EOF){
+   		 break;
+
+   	 }
+
+   	 if(id == bookId){
+   		return true;
+   	 }
+    } while (ch != EOF);
+
+    fclose(fp);
+    return false;
+
+}
+
+void updateStock(int bookId, int newStock){
+
+    FILE *fp, *temp;
+
+    temp = fopen("temp.txt", "w"):
+    fclose(temp);
+
+    temp = fopen("temp.txt", "a");
+    fp = fopen("books.txt", "r");
+
+    if(fp == NULL || temp == NULL){
+        printf("Failed to open the file\n");
+    }
+
+    do {
+   	 fscanf(fp, "%d", id);
+   	 ch = fscanf(fp, "%s", book);
+   	 ch = fscanf(fp, "%s", author);
+   	 ch = fscanf(fp, "%d", &stock);
+
+   	 if (ch == EOF){
+   		 break;
+
+   	 }
+
+   	 if(id == bookId){
+   		stock += newStock;
+   	 }
+
+    fprintf(temp, "%d %s %s %d\n", id, book, author, stock);
+
+    } while (ch != EOF);
+    fclose(fp);
+    fclose(temp);
+
+    fp = fopen("books.txt", "w");
+    fclose(fp);
+
+    fp = fopen("books.txt", "a");
+    temp = fopen("temp.txt", "r");
+    
+    char line[1024];
+    while(fgets(line, 1024, temp) != NULL){
+   	 //printf("line appended in users.txt\n");
+   	 fputs(line, fp);
+    }
+
+    fclose(fp);
+    fclose(temp);
+    printf("Stock updated Successfully.\n")
+}
+
 void display(){
 
     FILE *fp;
@@ -110,7 +201,9 @@ void display(){
     }
     
     char ch, book[50], author[50];
-    int id, stock;    
+    int id, stock;  
+
+    printf("%5s %10s %10s %10s\n","BookId","BookName",  "Authors", "Stock");  
     do {
    	 fscanf(fp, "%d", &id);
    	 ch = fscanf(fp, "%s", book);
@@ -122,8 +215,6 @@ void display(){
 
    	 }
 
-   	 
-   	 printf("%5s %10s %10s %10s\n","BookId","BookName",  "Authors", "Stock");
    	 printf("%5d %10s %10s %10d\n", id, book, author, stock);
    	 
     } while (ch != EOF);
@@ -152,22 +243,35 @@ void userDashboard(char username[]){
 
 void adminDashboard(){
     printf("\n1. Add a Book\n");
-    printf("2. Find a Book\n");
-    printf("3. Display Books\n");
-    printf("4. Issue Book\n");
-    printf("5. Return Book\n");
+    printf("2. Update Stock\n");
+    printf("3. Find a Book\n");
+    printf("4. Display Books\n");
+    printf("5. Issue Book\n");
+    printf("6. Return Book\n");
 
     int n;
     scanf("%d", &n);
     if(n == 1){
    	 addBook();
     }else if(n == 2){
+        printf("Enter Id of the Book.\n");
+        int bookId;
+        scanf("%d", &bookId);
+        if(!validBookId(bookId)){
+            printf("Enter valid book Id.\n");
+            scanf("%d", &bookId)
+        }
+        printf("Enter new stock.\n");
+        int newStock;
+        scanf("%d", &newStock);
+        updateStock(bookId, newStock);
+    }else if(n == 3){
    	 findBook();
-    }else if (n == 3){
-   	 display();
     }else if (n == 4){
+   	 display();
+    }else if (n == 5){
    	 issue();
-    }else if(n == 5){
+    }else if(n == 6){
    	 returnBook();
     }else{
    	 printf("Invalid Input\n");
@@ -209,7 +313,7 @@ bool isAvailable(int bookId){
 void issue(){
     char username[50];
     int bookId;
-    bool issued = false;
+    bool issued = false, userFound = false;
 
     printf("Enter Username:\n");
     scanf("%s", username);
@@ -291,6 +395,12 @@ void issue(){
 
     if(issued){
    	 decrementStock(bookId);
+    }
+
+    if(!userFound){
+        printf("Invalid user name.\n");
+    }else{
+        printf("Book with Id %d is issued to %s.\n", bookId, username);
     }
 
 }
@@ -484,7 +594,7 @@ void myBooks(char username[]){
     users = fopen("users.txt","r");
     
     char ch, Username[50], Password[17];
-    int book1, book2, booksArr[2];
+    int book1, book2, booksArr[2], noBooksIssued = 0;
    	 
     do {
    	 
@@ -502,10 +612,21 @@ void myBooks(char username[]){
    		 //printf("User matched\n");
    		 booksArr[0] = book1;
    		 booksArr[1] = book2;
+
+         if(book1 != -1){
+            noBooksIssued++;
+         }
+         if(book2 != -1){
+            noBooksIssued++;
+         }
    	 }
     }while(ch != EOF);
     fclose(users);
 
+    if(noBooksIssued == 0){
+        printf("No Book issued yet.\n");
+        return;
+    }
 
     booksPointer = fopen("books.txt", "r");
     if (booksPointer == NULL){
@@ -513,8 +634,7 @@ void myBooks(char username[]){
     }
     
     char book[50], author[50];
-    int id, stock;    
-    bool found = false;
+    int id, stock;
 
     printf("%5s %10s %10s\n","BookId","BookName","Authors");
     do {
@@ -531,15 +651,10 @@ void myBooks(char username[]){
    	 for(int i=0;i< sizeof(booksArr)/sizeof(booksArr[0]);i++){
    		 //printf("%d\n", booksArr[i]);
    		 if(id == booksArr[i]){
-			found = true;
    			 printf("%5d %10s %10s\n", id, book, author);
    		 }
    	 }
     } while (ch != EOF);
     fclose(booksPointer);
 
-
-    if(!found()){
-	printf(“No book issued\n”):
-    }
 }

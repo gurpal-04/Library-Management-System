@@ -11,3 +11,5 @@ void returnBook();
 void decrementStock(int bookId);
 void incrementStock(int bookId);
 void myBooks(char username[]);
+void updateStock(int, int);
+bool validBookId(int);
