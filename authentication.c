@@ -28,14 +28,14 @@ bool emailValidation(char str[]) {
 }
 
 bool passwordValidation(char str[]){
-    char *pattern = "^[A-Za-z0-9+_.-]+@(.+)$";
+    char *pattern = "^[A-Za-z0-9!@#$%^&*()_+]{8,16}$";
 
     regex_t passwordPattern;
 
     int ret = regcomp(&passwordPattern, pattern, REG_EXTENDED);
     if(ret){
         char error_msg[100];
-        regerror(ret, &emailPattern, error_msg, sizeof(error_msg));
+        regerror(ret, &passwordPattern, error_msg, sizeof(error_msg));
         printf("Regular exp compile failed\n");
         printf("Error Message: %s", error_msg);
     }

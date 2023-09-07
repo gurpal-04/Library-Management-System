@@ -120,7 +120,7 @@ bool validBookId(int bookId){
     bool found = false;
 
     do {
-   	 fscanf(fp, "%d", id);
+   	 fscanf(fp, "%d", &id);
    	 ch = fscanf(fp, "%s", book);
    	 ch = fscanf(fp, "%s", author);
    	 ch = fscanf(fp, "%d", &stock);
@@ -144,7 +144,7 @@ void updateStock(int bookId, int newStock){
 
     FILE *fp, *temp;
 
-    temp = fopen("temp.txt", "w"):
+    temp = fopen("temp.txt", "w");
     fclose(temp);
 
     temp = fopen("temp.txt", "a");
@@ -154,8 +154,10 @@ void updateStock(int bookId, int newStock){
         printf("Failed to open the file\n");
     }
 
+    char book[50], ch, author[50];
+    int stock, id;
     do {
-   	 fscanf(fp, "%d", id);
+   	 fscanf(fp, "%d", &id);
    	 ch = fscanf(fp, "%s", book);
    	 ch = fscanf(fp, "%s", author);
    	 ch = fscanf(fp, "%d", &stock);
@@ -189,7 +191,7 @@ void updateStock(int bookId, int newStock){
 
     fclose(fp);
     fclose(temp);
-    printf("Stock updated Successfully.\n")
+    printf("Stock updated Successfully.\n");
 }
 
 void display(){
@@ -259,7 +261,7 @@ void adminDashboard(){
         scanf("%d", &bookId);
         if(!validBookId(bookId)){
             printf("Enter valid book Id.\n");
-            scanf("%d", &bookId)
+            scanf("%d", &bookId);
         }
         printf("Enter new stock.\n");
         int newStock;
