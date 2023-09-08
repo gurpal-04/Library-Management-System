@@ -38,6 +38,7 @@ void addBook(){
 }
 
 void findBookBy(char findBy[]){
+    bool found = false;
     FILE *fp;
     fp = fopen("books.txt", "r");
     if (fp == NULL){
@@ -59,7 +60,10 @@ void findBookBy(char findBy[]){
     }
 
     char search[50];
-    scanf("%s", search);
+    // scanf("%s", search);
+    getchar();
+    fgets(search, 50, stdin);
+    search[strcspn(search, "\n")] = '\0';
 
     char book[50], ch, author[50];
     int stock, id;
@@ -86,11 +90,14 @@ void findBookBy(char findBy[]){
    		(identify == 2 && strcmp(author, search)==0)){
    		 printf("%5s %30s %30s %10s\n","BookId","BookName",  "Authors", "Stock");
    		 printf("%5d %30s %30s %10d\n", id, book, author, stock);
+         found = true;
    	 }
     } while (ch != EOF);
 
     fclose(fp);
-
+    if(!found){
+        printf("\nNo book Found\n");
+    }
 }
 
 void findBook(){
