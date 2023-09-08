@@ -15,13 +15,14 @@ void addBook(){
         printf("There already exist a book with Id: %d\n", n);
         printf("Enter valid Book Id\n");
         scanf("%d", &n);
-    }   
+    }  
+    getchar(); 
 
     printf("Enter name of the Book\n");
-    scanf("%s", book);
+    fgets(book, 50, stdin);
     
     printf("Enter author of the book\n");
-    scanf("%s", author);
+    fgets(author, 50, stdin);
 
     printf("Enter the available stock\n");
     scanf("%d", &stock);
@@ -31,8 +32,8 @@ void addBook(){
     if(fp==NULL){
    	 printf("Failed to open the file\n");
     }
-
-    fprintf(fp, "%d %s %s %d\n", n, book, author, stock);
+    printf("%d %s %s %d\n", n, book, author, stock);
+    fprintf(fp, "%d%s%s%d\n", n, book, author, stock);
     fclose(fp);
 }
 
@@ -60,26 +61,38 @@ void findBookBy(char findBy[]){
     char search[50];
     scanf("%s", search);
 
-    char book[50], ch;
-    char id[50], author[50];
-    int stock;
+    char book[50], ch, author[50];
+    int stock, id;
 
     do {
-   	 fscanf(fp, "%s", id);
-   	 ch = fscanf(fp, "%s", book);
-   	 ch = fscanf(fp, "%s", author);
-   	 ch = fscanf(fp, "%d", &stock);
+   	//  fscanf(fp, "%s", id);
+   	//  ch = fscanf(fp, "%s", book);
+   	//  ch = fscanf(fp, "%s", author);
+   	//  ch = fscanf(fp, "%d", &stock);
 
+    fscanf(fp, "%d", &id);
+    char sid[50];
+    // itoa(id, sid, 10);
+    sprintf(sid, "%d", id);
+
+     fgets(book, 50, fp);
+     book[strcspn(book, "\n")] = '\0';
+
+     fgets(author, 50, fp);
+     author[strcspn(author, "\n")] = '\0';
+
+   	 ch = fscanf(fp, "%d", &stock);
+    // printf("%5s %30s %30s %10d\n", sid, book, author, stock);
    	 if (ch == EOF){
    		 break;
 
    	 }
 
-   	 if((identify == 0 && strcmp(id, search)==0) ||
+   	 if((identify == 0 && strcmp(sid, search)==0) ||
    		(identify == 1 && strcmp(book, search)==0) ||
    		(identify == 2 && strcmp(author, search)==0)){
-   		 printf("%5s %10s %10s %10s\n","BookId","BookName",  "Authors", "Stock");
-   		 printf("%5s %10s %10s %10d\n", id, book, author, stock);
+   		 printf("%5s %30s %30s %10s\n","BookId","BookName",  "Authors", "Stock");
+   		 printf("%5d %30s %30s %10d\n", id, book, author, stock);
    	 }
     } while (ch != EOF);
 
@@ -120,9 +133,19 @@ bool validBookId(int bookId){
     bool found = false;
 
     do {
-   	 fscanf(fp, "%d", &id);
-   	 ch = fscanf(fp, "%s", book);
-   	 ch = fscanf(fp, "%s", author);
+   	//  fscanf(fp, "%d", &id);
+   	//  ch = fscanf(fp, "%s", book);
+   	//  ch = fscanf(fp, "%s", author);
+   	//  ch = fscanf(fp, "%d", &stock);
+
+    fscanf(fp, "%d", &id);
+
+     fgets(book, 50, fp);
+     book[strcspn(book, "\n")] = '\0';
+
+     fgets(author, 50, fp);
+     author[strcspn(author, "\n")] = '\0';
+
    	 ch = fscanf(fp, "%d", &stock);
 
    	 if (ch == EOF){
@@ -157,9 +180,19 @@ void updateStock(int bookId, int newStock){
     char book[50], ch, author[50];
     int stock, id;
     do {
-   	 fscanf(fp, "%d", &id);
-   	 ch = fscanf(fp, "%s", book);
-   	 ch = fscanf(fp, "%s", author);
+   	//  fscanf(fp, "%d", &id);
+   	//  ch = fscanf(fp, "%s", book);
+   	//  ch = fscanf(fp, "%s", author);
+   	//  ch = fscanf(fp, "%d", &stock);
+
+    fscanf(fp, "%d", &id);
+
+     fgets(book, 50, fp);
+     book[strcspn(book, "\n")] = '\0';
+
+     fgets(author, 50, fp);
+     author[strcspn(author, "\n")] = '\0';
+
    	 ch = fscanf(fp, "%d", &stock);
 
    	 if (ch == EOF){
@@ -171,7 +204,7 @@ void updateStock(int bookId, int newStock){
    		stock += newStock;
    	 }
 
-    fprintf(temp, "%d %s %s %d\n", id, book, author, stock);
+    fprintf(temp, "%d%s\n%s\n%d\n", id, book, author, stock);
 
     } while (ch != EOF);
     fclose(fp);
@@ -205,11 +238,16 @@ void display(){
     char ch, book[50], author[50];
     int id, stock;  
 
-    printf("%5s %10s %10s %10s\n","BookId","BookName",  "Authors", "Stock");  
+    printf("%5s %30s %30s %10s\n","BookId","BookName",  "Authors", "Stock");  
     do {
    	 fscanf(fp, "%d", &id);
-   	 ch = fscanf(fp, "%s", book);
-   	 ch = fscanf(fp, "%s", author);
+
+     fgets(book, 50, fp);
+     book[strcspn(book, "\n")] = '\0';
+
+     fgets(author, 50, fp);
+     author[strcspn(author, "\n")] = '\0';
+
    	 ch = fscanf(fp, "%d", &stock);
 
    	 if (ch == EOF){
@@ -217,7 +255,7 @@ void display(){
 
    	 }
 
-   	 printf("%5d %10s %10s %10d\n", id, book, author, stock);
+   	 printf("%5d %30s %30s %10d\n", id, book, author, stock);
    	 
     } while (ch != EOF);
     fclose(fp);
@@ -294,9 +332,19 @@ bool isAvailable(int bookId){
     char ch, book[50], author[50];
     int id, stock;    
     do {
-   	 fscanf(fp, "%d", &id);
-   	 ch = fscanf(fp, "%s", book);
-   	 ch = fscanf(fp, "%s", author);
+   	//  fscanf(fp, "%d", &id);
+   	//  ch = fscanf(fp, "%s", book);
+   	//  ch = fscanf(fp, "%s", author);
+   	//  ch = fscanf(fp, "%d", &stock);
+
+     fscanf(fp, "%d", &id);
+
+     fgets(book, 50, fp);
+     book[strcspn(book, "\n")] = '\0';
+
+     fgets(author, 50, fp);
+     author[strcspn(author, "\n")] = '\0';
+
    	 ch = fscanf(fp, "%d", &stock);
 
    	 if (ch == EOF){
@@ -434,7 +482,6 @@ void returnBook(){
    	 ch = fscanf(fp, "%s", Password);
    	 ch = fscanf(fp, "%d", &book1);
    	 ch = fscanf(fp, "%d", &book2);
-   	 
 
    	 if (ch == EOF){
    		 break;
@@ -503,9 +550,19 @@ void decrementStock(int bookId){
     char ch, book[50], author[50];
     int id, stock;    
     do {
-   	 fscanf(fp, "%d", &id);
-   	 ch = fscanf(fp, "%s", book);
-   	 ch = fscanf(fp, "%s", author);
+   	//  fscanf(fp, "%d", &id);
+   	//  ch = fscanf(fp, "%s", book);
+   	//  ch = fscanf(fp, "%s", author);
+   	//  ch = fscanf(fp, "%d", &stock);
+
+    fscanf(fp, "%d", &id);
+
+     fgets(book, 50, fp);
+     book[strcspn(book, "\n")] = '\0';
+
+     fgets(author, 50, fp);
+     author[strcspn(author, "\n")] = '\0';
+
    	 ch = fscanf(fp, "%d", &stock);
 
    	 if (ch == EOF){
@@ -516,7 +573,8 @@ void decrementStock(int bookId){
    		 --stock;
    	 }
 
-   	 fprintf(temp, "%d %s %s %d\n", id, book, author, stock);
+   	//  fprintf(temp, "%d %s %s %d\n", id, book, author, stock);
+    fprintf(temp, "%d%s\n%s\n%d\n", id, book, author, stock);
    	 
     } while (ch != EOF);
     fclose(fp);
@@ -554,9 +612,19 @@ void incrementStock(int bookId){
     char ch, book[50], author[50];
     int id, stock;    
     do {
-   	 fscanf(fp, "%d", &id);
-   	 ch = fscanf(fp, "%s", book);
-   	 ch = fscanf(fp, "%s", author);
+   	//  fscanf(fp, "%d", &id);
+   	//  ch = fscanf(fp, "%s", book);
+   	//  ch = fscanf(fp, "%s", author);
+   	//  ch = fscanf(fp, "%d", &stock);
+
+    fscanf(fp, "%d", &id);
+
+     fgets(book, 50, fp);
+     book[strcspn(book, "\n")] = '\0';
+
+     fgets(author, 50, fp);
+     author[strcspn(author, "\n")] = '\0';
+
    	 ch = fscanf(fp, "%d", &stock);
 
    	 if (ch == EOF){
@@ -567,7 +635,8 @@ void incrementStock(int bookId){
    		 ++stock;
    	 }
 
-   	 fprintf(temp, "%d %s %s %d\n", id, book, author, stock);
+   	//  fprintf(temp, "%d %s %s %d\n", id, book, author, stock);
+    fprintf(temp, "%d%s\n%s\n%d\n", id, book, author, stock);
    	 
     } while (ch != EOF);
     fclose(fp);
@@ -640,9 +709,19 @@ void myBooks(char username[]){
 
     printf("%5s %10s %10s\n","BookId","BookName","Authors");
     do {
-   	 ch = fscanf(booksPointer, "%d", &id);
-   	 ch = fscanf(booksPointer, "%s", book);
-   	 ch = fscanf(booksPointer, "%s", author);
+   	//  ch = fscanf(booksPointer, "%d", &id);
+   	//  ch = fscanf(booksPointer, "%s", book);
+   	//  ch = fscanf(booksPointer, "%s", author);
+   	//  ch = fscanf(booksPointer, "%d", &stock);
+
+    fscanf(booksPointer, "%d", &id);
+
+     fgets(book, 50, booksPointer);
+     book[strcspn(book, "\n")] = '\0';
+
+     fgets(author, 50, booksPointer);
+     author[strcspn(author, "\n")] = '\0';
+
    	 ch = fscanf(booksPointer, "%d", &stock);
 
    	 if (ch == EOF){
