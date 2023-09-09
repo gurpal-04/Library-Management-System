@@ -256,13 +256,13 @@ void userDashboard(char username[]){
     printf("2. Display Books\n");
     printf("3. My Books\n");
 
-    int n;
-    scanf("%d", &n);
-    if(n == 1){
+    char n;
+    scanf("%s", &n);
+    if(n == '1'){
    	 findBook();
-    }else if (n == 2){
+    }else if (n == '2'){
    	 display();
-    }else if(n ==3){
+    }else if(n =='3'){
    	 myBooks(username);
     }else{
    	 printf("Invalid Input");
@@ -278,11 +278,11 @@ void adminDashboard(){
     printf("5. Issue Book\n");
     printf("6. Return Book\n");
 
-    int n;
-    scanf("%d", &n);
-    if(n == 1){
+    char n;
+    scanf("%s", &n);
+    if(n == '1'){
    	 addBook();
-    }else if(n == 2){
+    }else if(n == '2'){
         printf("Enter Id of the Book.\n");
         int bookId;
         scanf("%d", &bookId);
@@ -294,13 +294,13 @@ void adminDashboard(){
         int newStock;
         scanf("%d", &newStock);
         updateStock(bookId, newStock);
-    }else if(n == 3){
+    }else if(n == '3'){
    	 findBook();
-    }else if (n == 4){
+    }else if (n == '4'){
    	 display();
-    }else if (n == 5){
+    }else if (n == '5'){
    	 issue();
-    }else if(n == 6){
+    }else if(n == '6'){
    	 returnBook();
     }else{
    	 printf("Invalid Input\n");

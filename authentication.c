@@ -131,18 +131,23 @@ void logIn(){
     printf("2. Login as admin\n");
     
     printf("Enter the option\n");
-    int n;
-    scanf("%d",&n);
+    char n;
+    scanf("%s",&n);
+    // printf("%s",n);
+    if(n!='1' && n!='2'){
+        printf("Enter valid option.\n");
+        logIn();
+    }
 
     char username[50], password[17];
     printf("Enter email address: \n");
     scanf("%s", username);
     printf("Password: \n");
     scanf("%s", password);
-
-    if (n==1 && userLogIn(username, password)){
+    
+    if (n=='1' && userLogIn(username, password)){
    	 userDashboard(username);
-    }else if(n==2 && adminLogIn(username, password)){
+    }else if(n=='2' && adminLogIn(username, password)){
    	 adminDashboard();
     }else{
      printf("Invalid credentials. Try again.\n");
